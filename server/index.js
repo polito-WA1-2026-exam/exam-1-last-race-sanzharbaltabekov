@@ -10,6 +10,9 @@ import {
   verifyPassword,
 } from "./dao/user-dao.js";
 
+import { getNetwork } from "./dao/network-dao.js";
+import { getRanking } from "./dao/ranking-dao.js";
+
 const app = express();
 const port = 3001;
 
@@ -149,10 +152,30 @@ app.delete("/api/sessions/current", isLoggedIn, (req, res, next) => {
   });
 });
 
+app.get("/api/network", isLoggedIn, async (req, res, next) => {
+  try {
+    const network = await getNetwork();
+
+    return res.json(network);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+app.get("/api/rankings", isLoggedIn, async (req, res, next) => {
+  try {
+    const ranking = await getRanking();
+
+    return res.json(ranking);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
 
-  res.status(500).json({
+  return res.status(500).json({
     error: "Internal server error.",
   });
 });
