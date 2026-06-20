@@ -3,6 +3,10 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import {
+  createNewGame,
+  submitGameRoute,
+} from "./services/game-service.js";
 
 import {
   getUserById,
@@ -172,11 +176,47 @@ app.get("/api/rankings", isLoggedIn, async (req, res, next) => {
   }
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
+app.post("/api/games", isLoggedIn, async (req, res, next) => {
+  try {
+    const game = await createNewGame(req.user.id);
+    return res.status(201).json(game);
+  } catch (err) {
+    return next(err);
+  }
+});
 
-  return res.status(500).json({
-    error: "Internal server error.",
+app.post(
+  "/api/games/:gameId/route",
+  isLoggedIn,
+  async (req, res, next) => {
+    try {
+      const gameId = Number(req.params.gameId);
+
+      const result = await submitGameRoute({
+        gameId,
+        userId: req.user.id,
+        segmentIds: req.body?.segmentIds,
+      });
+
+      return res.status(200).json(result);
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+app.use((err, req, res, next) => {
+  const status = err.status ?? 500;
+
+  if (status >= 500) {
+    console.error(err);
+  }
+
+  return res.status(status).json({
+    error:
+      status >= 500
+        ? "Internal server error."
+        : err.message,
   });
 });
 
