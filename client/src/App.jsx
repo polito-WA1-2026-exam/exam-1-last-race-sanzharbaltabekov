@@ -15,6 +15,9 @@ import "./App.css";
 
 import PlanningPage from "./pages/PlanningPage.jsx";
 
+import ExecutionPage from "./pages/ExecutionPage.jsx";
+import ResultPage from "./pages/ResultPage.jsx";
+
 export default function App() {
   return (
     <Routes>
@@ -44,6 +47,16 @@ export default function App() {
           <Route
             path="/game/:gameId/planning"
             element={<PlanningPage />}
+          />
+
+          <Route
+            path="/game/:gameId/execution"
+            element={<ExecutionPage />}
+          />
+
+          <Route
+            path="/game/:gameId/result"
+            element={<ResultPage />}
           />
 
         <Route
