@@ -138,6 +138,7 @@ async function initializeDatabase() {
       event_id INTEGER,
       event_effect INTEGER,
       coins_after INTEGER,
+      revealed_at TEXT,
 
       UNIQUE (game_id, step_number),
 

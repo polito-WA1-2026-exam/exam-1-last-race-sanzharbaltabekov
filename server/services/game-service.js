@@ -4,6 +4,7 @@ import {
   getEvents,
   getGameByIdForUser,
   getGameGraph,
+  revealNextGameStep,
   startGameExecution,
 } from "../dao/game-dao.js";
 
@@ -439,5 +440,55 @@ export async function submitGameRoute({
     valid: true,
     status: "executing",
     stepCount: preparedSteps.length,
+  };
+}
+
+/**
+ * Reveals exactly one pending execution step.
+ */
+export async function executeNextGameStep({
+  gameId,
+  userId,
+}) {
+  if (!Number.isInteger(gameId) || gameId <= 0) {
+    throw createHttpError(400, "Invalid game ID.");
+  }
+
+  const revealedAt = new Date().toISOString();
+
+  const result = await revealNextGameStep({
+    gameId,
+    userId,
+    revealedAt,
+  });
+
+  if (result.outcome === "not-found") {
+    throw createHttpError(404, "Game not found.");
+  }
+
+  if (result.outcome === "wrong-status") {
+    throw createHttpError(
+      409,
+      `This game cannot execute another step because its status is '${result.status}'.`,
+    );
+  }
+
+  if (result.outcome === "no-step") {
+    throw createHttpError(
+      409,
+      "This game has no pending execution step.",
+    );
+  }
+
+  return {
+    gameId,
+    status: result.completed
+      ? "completed"
+      : "executing",
+    step: result.step,
+    completed: result.completed,
+    finalScore: result.completed
+      ? result.finalScore
+      : null,
   };
 }

@@ -5,6 +5,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import {
   createNewGame,
+  executeNextGameStep,
   submitGameRoute,
 } from "./services/game-service.js";
 
@@ -196,6 +197,25 @@ app.post(
         gameId,
         userId: req.user.id,
         segmentIds: req.body?.segmentIds,
+      });
+
+      return res.status(200).json(result);
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+app.post(
+  "/api/games/:gameId/next-step",
+  isLoggedIn,
+  async (req, res, next) => {
+    try {
+      const gameId = Number(req.params.gameId);
+
+      const result = await executeNextGameStep({
+        gameId,
+        userId: req.user.id,
       });
 
       return res.status(200).json(result);

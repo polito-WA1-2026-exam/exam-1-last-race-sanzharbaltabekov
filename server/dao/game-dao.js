@@ -243,3 +243,180 @@ export async function startGameExecution({
     throw err;
   }
 }
+
+/**
+ * Reveals the next unrevealed execution step for one user's game.
+ *
+ * Returns:
+ * - { outcome: "not-found" } if the game does not belong to the user
+ * - { outcome: "wrong-status", status } if it is not executing
+ * - { outcome: "no-step" } if no unrevealed step exists
+ * - { outcome: "revealed", step, completed, finalScore }
+ */
+export async function revealNextGameStep({
+  gameId,
+  userId,
+  revealedAt,
+}) {
+  await exec("BEGIN IMMEDIATE TRANSACTION");
+
+  try {
+    const game = await get(
+      `
+        SELECT
+          id,
+          status
+        FROM games
+        WHERE id = ? AND user_id = ?
+      `,
+      [gameId, userId],
+    );
+
+    if (!game) {
+      await exec("ROLLBACK");
+
+      return {
+        outcome: "not-found",
+      };
+    }
+
+    if (game.status !== "executing") {
+      await exec("ROLLBACK");
+
+      return {
+        outcome: "wrong-status",
+        status: game.status,
+      };
+    }
+
+    const nextStep = await get(
+      `
+        SELECT
+          gs.id,
+          gs.step_number AS stepNumber,
+          gs.segment_id AS segmentId,
+          gs.from_station_id AS fromStationId,
+          from_station.name AS fromStationName,
+          gs.to_station_id AS toStationId,
+          to_station.name AS toStationName,
+          gs.event_id AS eventId,
+          e.description AS eventDescription,
+          gs.event_effect AS eventEffect,
+          gs.coins_after AS coinsAfter
+        FROM game_steps gs
+        JOIN stations from_station
+          ON from_station.id = gs.from_station_id
+        JOIN stations to_station
+          ON to_station.id = gs.to_station_id
+        JOIN events e
+          ON e.id = gs.event_id
+        WHERE
+          gs.game_id = ?
+          AND gs.revealed_at IS NULL
+        ORDER BY gs.step_number
+        LIMIT 1
+      `,
+      [gameId],
+    );
+
+    if (!nextStep) {
+      await exec("ROLLBACK");
+
+      return {
+        outcome: "no-step",
+      };
+    }
+
+    const revealResult = await run(
+      `
+        UPDATE game_steps
+        SET revealed_at = ?
+        WHERE
+          id = ?
+          AND revealed_at IS NULL
+      `,
+      [revealedAt, nextStep.id],
+    );
+
+    if (revealResult.changes !== 1) {
+      throw new Error(
+        "The execution step could not be revealed.",
+      );
+    }
+
+    const remainingStep = await get(
+      `
+        SELECT id
+        FROM game_steps
+        WHERE
+          game_id = ?
+          AND revealed_at IS NULL
+        LIMIT 1
+      `,
+      [gameId],
+    );
+
+    const completed = !remainingStep;
+    let finalScore = null;
+
+    if (completed) {
+      finalScore = Math.max(0, nextStep.coinsAfter);
+
+      const completionResult = await run(
+        `
+          UPDATE games
+          SET
+            status = 'completed',
+            completed_at = ?,
+            final_score = ?,
+            is_valid = 1
+          WHERE
+            id = ?
+            AND user_id = ?
+            AND status = 'executing'
+        `,
+        [
+          revealedAt,
+          finalScore,
+          gameId,
+          userId,
+        ],
+      );
+
+      if (completionResult.changes !== 1) {
+        throw new Error(
+          "The completed game could not be saved.",
+        );
+      }
+    }
+
+    await exec("COMMIT");
+
+    return {
+      outcome: "revealed",
+      step: {
+        stepNumber: nextStep.stepNumber,
+        segmentId: nextStep.segmentId,
+        fromStation: {
+          id: nextStep.fromStationId,
+          name: nextStep.fromStationName,
+        },
+        toStation: {
+          id: nextStep.toStationId,
+          name: nextStep.toStationName,
+        },
+        event: {
+          id: nextStep.eventId,
+          description: nextStep.eventDescription,
+          effect: nextStep.eventEffect,
+        },
+        coinsAfter: nextStep.coinsAfter,
+      },
+      completed,
+      finalScore,
+    };
+  } catch (err) {
+    await exec("ROLLBACK");
+    throw err;
+  }
+}
