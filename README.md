@@ -25,7 +25,7 @@ Except for the health check and login API, all endpoints require an authenticate
   - Authenticates the user and returns their public user information.
 - GET `/api/sessions/current`
   - Returns the currently authenticated user's public information.
-- DELETE /api/sessions/current
+- DELETE `/api/sessions/current`
   - Logs out the current user, destroys the session, and returns HTTP status `204`.
 - GET `/api/network`
   - Returns the underground lines, stations, station-line associations, interchange information, coordinates, and connected segments.
@@ -67,10 +67,10 @@ Except for the health check and login API, all endpoints require an authenticate
 
 ## Screenshot
 
-# General Ranking Page
+- General Ranking Page
 ![Screenshot](./screenshots/ranking.png)
 
-# Game in Progress
+- Game in Progress
 ![Screenshot](./screenshots/game-in-progress.png)
 
 ## Users Credentials
