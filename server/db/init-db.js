@@ -166,21 +166,21 @@ async function initializeDatabase() {
     const users = [
       {
         id: 1,
-        username: "alice",
-        name: "Alice",
-        password: "password",
+        username: "sanzhar",
+        name: "Sanzhar",
+        password: "23012005",
       },
       {
         id: 2,
-        username: "bob",
-        name: "Bob",
-        password: "password",
+        username: "baubek",
+        name: "Baubek",
+        password: "04072005",
       },
       {
         id: 3,
-        username: "carol",
-        name: "Carol",
-        password: "password",
+        username: "akmal",
+        name: "Akmal",
+        password: "09112006",
       },
     ];
 
@@ -203,10 +203,10 @@ async function initializeDatabase() {
     }
 
     const lines = [
-      [1, "Red Line", "#dc3545"],
-      [2, "Blue Line", "#0d6efd"],
-      [3, "Green Line", "#198754"],
-      [4, "Yellow Line", "#f0ad00"],
+      [1, "Linea 1", "#f0ad00"],
+      [2, "Linea 2", "#0d6efd"],
+      [3, "Linea 3", "#198754"],
+      [4, "Linea 4", "#dc3545"],
     ];
 
     for (const line of lines) {
@@ -218,23 +218,23 @@ async function initializeDatabase() {
     }
 
     const stations = [
-      [1, "North Gate", 100, 180],
-      [2, "Museum", 250, 180],
-      [3, "Central", 450, 180],
-      [4, "Garden", 550, 180],
-      [5, "Stadium", 650, 180],
+      [1, "Monte Grappa", 100, 180],
+      [2, "Rivoli", 250, 180],
+      [3, "Racconigi", 450, 180],
+      [4, "Bernini", 550, 180],
+      [5, "Principi D'acaja", 650, 180],
 
-      [6, "Harbor", 450, 40],
-      [7, "Market", 450, 100],
-      [8, "University", 450, 330],
-      [9, "Airport", 450, 500],
+      [6, "Dora", 450, 40],
+      [7, "Livorno", 450, 100],
+      [8, "Politecnico", 450, 330],
+      [9, "Stadio", 450, 500],
 
-      [10, "Old Town", 100, 330],
-      [11, "Riverside", 350, 280],
-      [12, "Observatory", 650, 330],
+      [10, "San Vincenzo", 100, 330],
+      [11, "Ruffini", 350, 280],
+      [12, "Lingotto", 650, 330],
 
-      [13, "Lantern Square", 350, 400],
-      [14, "South Park", 350, 500],
+      [13, "Unione Sovietica", 350, 400],
+      [14, "Boschetto", 350, 500],
     ];
 
     for (const station of stations) {
@@ -246,28 +246,28 @@ async function initializeDatabase() {
     }
 
     const stationLines = [
-      // Red Line
+      // Linea 1
       [1, 1, 1],
       [2, 1, 2],
       [3, 1, 3],
       [4, 1, 4],
       [5, 1, 5],
 
-      // Blue Line
+      // Linea 2
       [6, 2, 1],
       [7, 2, 2],
       [3, 2, 3],
       [8, 2, 4],
       [9, 2, 5],
 
-      // Green Line
+      // Linea 3
       [10, 3, 1],
       [2, 3, 2],
       [11, 3, 3],
       [8, 3, 4],
       [12, 3, 5],
 
-      // Yellow Line
+      // Linea 4
       [5, 4, 1],
       [11, 4, 2],
       [13, 4, 3],
@@ -284,25 +284,25 @@ async function initializeDatabase() {
     }
 
     const segments = [
-      // Red Line
+      // Linea 1
       [1, 1, 1, 2],
       [2, 1, 2, 3],
       [3, 1, 3, 4],
       [4, 1, 4, 5],
 
-      // Blue Line
+      // Linea 2
       [5, 2, 6, 7],
       [6, 2, 3, 7],
       [7, 2, 3, 8],
       [8, 2, 8, 9],
 
-      // Green Line
+      // Linea 3
       [9, 3, 2, 10],
       [10, 3, 2, 11],
       [11, 3, 8, 11],
       [12, 3, 8, 12],
 
-      // Yellow Line
+      // Linea 4
       [13, 4, 5, 11],
       [14, 4, 11, 13],
       [15, 4, 13, 14],
@@ -404,13 +404,13 @@ async function initializeDatabase() {
     );
 
     const gameSteps = [
-      // Alice: North Gate -> Stadium
+      // Sanzhar: Monte Grappa -> Principi D'acaja
       [1, 1, 1, 1, 1, 2, 7, 1, 21],
       [2, 1, 2, 2, 2, 3, 5, 0, 21],
       [3, 1, 3, 3, 3, 4, 8, 2, 23],
       [4, 1, 4, 4, 4, 5, 4, -1, 22],
 
-      // Bob: Harbor -> Airport
+      // Baubek: Parco Dora -> Stadio
       [5, 2, 1, 5, 6, 7, 5, 0, 20],
       [6, 2, 2, 6, 7, 3, 4, -1, 19],
       [7, 2, 3, 7, 3, 8, 7, 1, 20],
