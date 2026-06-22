@@ -1,5 +1,5 @@
 # Exam #1: "Last Race"
-## Student: s123456 BALTABEKOV SANZHAR 
+## Student: s360124 BALTABEKOV SANZHAR
 
 Last Race is a single-player underground route-planning game developed with React 19, Express, Passport.js, session cookies, and SQLite.
 
