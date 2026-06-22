@@ -18,52 +18,57 @@ import PlanningPage from "./pages/PlanningPage.jsx";
 import ExecutionPage from "./pages/ExecutionPage.jsx";
 import ResultPage from "./pages/ResultPage.jsx";
 
+import PageTitle from "./components/PageTitle.jsx";
+
 export default function App() {
   return (
-    <Routes>
-      <Route element={<AppLayout />}>
-        <Route
-          path="/"
-          element={<InstructionsPage />}
-        />
-
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
-
-        <Route element={<ProtectedRoute />}>
+    <>
+      <PageTitle />
+      <Routes>
+        <Route element={<AppLayout />}>
           <Route
-            path="/setup"
-            element={<SetupPage />}
+            path="/"
+            element={<InstructionsPage />}
           />
 
           <Route
-            path="/ranking"
-            element={<RankingPage />}
+            path="/login"
+            element={<LoginPage />}
+          />
+
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/setup"
+              element={<SetupPage />}
+            />
+
+            <Route
+              path="/ranking"
+              element={<RankingPage />}
+            />
+          </Route>
+
+            <Route
+              path="/game/:gameId/planning"
+              element={<PlanningPage />}
+            />
+
+            <Route
+              path="/game/:gameId/execution"
+              element={<ExecutionPage />}
+            />
+
+            <Route
+              path="/game/:gameId/result"
+              element={<ResultPage />}
+            />
+
+          <Route
+            path="*"
+            element={<Navigate to="/" replace />}
           />
         </Route>
-
-          <Route
-            path="/game/:gameId/planning"
-            element={<PlanningPage />}
-          />
-
-          <Route
-            path="/game/:gameId/execution"
-            element={<ExecutionPage />}
-          />
-
-          <Route
-            path="/game/:gameId/result"
-            element={<ResultPage />}
-          />
-
-        <Route
-          path="*"
-          element={<Navigate to="/" replace />}
-        />
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }
