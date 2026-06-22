@@ -65,12 +65,15 @@ Except for the health check and login API, all endpoints require an authenticate
 - `ResultPage` (in `pages/ResultPage.jsx`): displays the final score and, for successful games, the completed journey summary.
 - `RankingPage` (in `pages/RankingPage.jsx`): retrieves and displays the general ranking based on each user's best successful score.
 
-## Screenshot
+## Screenshots
 
 - General Ranking Page
+
 ![Screenshot](./screenshots/ranking.png)
 
+
 - Game in Progress
+
 ![Screenshot](./screenshots/game-in-progress.png)
 
 ## Users Credentials
